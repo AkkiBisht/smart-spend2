@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>Pennywise — Student Money Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.0/dist/css/intlTelInput.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="loginScreen" class="login-screen">
+    <div class="login-art"><div class="art-orb orb-one"></div><div class="art-orb orb-two"></div>
+      <div class="art-content"><div class="brand-mark large">P</div><p class="eyebrow">YOUR MONEY, IN FOCUS</p>
+        <h1>Spend with<br><span>intention.</span></h1><p class="art-copy">A calmer way to understand your money, make a plan, and keep your goals in reach.</p>
+        <div class="mini-stat"><span class="sparkle">✦</span><div><b>Small steps add up</b><small>Your money overview, all in one place.</small></div></div>
+      </div>
+    </div>
+    <div class="login-form-wrap"><div class="login-form">
+      <div class="mobile-brand"><div class="brand-mark">P</div><b>Pennywise</b></div>
+      <p class="eyebrow">WELCOME TO PENNYWISE</p><h2>Start your money check-in</h2>
+      <p class="muted">Use a demo sign-in to explore your personal tracker.</p>
+      <label class="field-label" for="phone">Mobile number</label><input id="phone" class="input phone-input" type="tel" autocomplete="tel" placeholder="Enter your phone number">
+      <button id="sendOtp" class="button primary full">Send demo code <span>→</span></button>
+      <div id="otpArea" class="otp-area hidden"><label class="field-label" for="otp">Demo verification code</label><input id="otp" class="input" inputmode="numeric" maxlength="6" placeholder="6-digit code"><button id="verifyOtp" class="button dark full">Verify and continue</button></div>
+      <p id="loginMessage" class="login-message">Demo mode only. No text message will be sent.</p>
+      <div class="login-divider"><span>LOCAL DEMO</span></div>
+      <p class="tiny muted">Your data stays in this browser using local storage. Real SMS sign-in needs a secure server and SMS provider.</p>
+    </div></div>
+  </div>
+
+  <div id="app" class="app-shell hidden">
+    <aside class="sidebar">
+      <a class="brand" href="#"><span class="brand-mark">P</span><span>Pennywise<small>STUDENT MONEY</small></span></a>
+      <div class="nav-label">WORKSPACE</div>
+      <nav id="navigation">
+        <button class="nav-item active" data-page="dashboard"><span class="nav-icon">⌂</span>Overview</button>
+        <button class="nav-item" data-page="transactions"><span class="nav-icon">↕</span>Transactions</button>
+        <button class="nav-item" data-page="budget"><span class="nav-icon">◉</span>Budget plan</button>
+        <button class="nav-item" data-page="insights"><span class="nav-icon">✦</span>Smart insights</button>
+      </nav>
+      <div class="sidebar-bottom"><div class="privacy-card"><span class="privacy-icon">⌑</span><div><b>Private by design</b><small>Stored on this device</small></div></div><button id="logout" class="nav-item logout"><span class="nav-icon">↪</span>Exit demo</button></div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar"><button id="menuToggle" class="mobile-menu" aria-label="Open menu">☰</button><div class="breadcrumb">Workspace <span>/</span> <b id="crumb">Overview</b></div><div class="top-actions"><button id="monthBadge" class="month-badge"><span class="live-dot"></span><span id="currentMonth"></span></button><button class="avatar" id="avatar">S</button></div></header>
+
+      <section id="dashboardPage" class="page active-page">
+        <div class="page-heading"><div><p class="eyebrow">YOUR FINANCIAL SNAPSHOT</p><h1 id="welcome">Good morning 👋</h1><p class="muted">Here’s what’s happening with your money this month.</p></div><button class="button primary" id="addExpenseTop"><span class="plus">＋</span> Add expense</button></div>
+        <div class="summary-grid">
+          <article class="summary-card balance-card"><div class="card-label">MONTHLY BUDGET <span class="card-symbol">↗</span></div><div id="incomeValue" class="card-value">₹0</div><div class="card-foot"><span class="status-pill mint">Family support</span><span class="subtle">Your monthly plan</span></div><div class="balance-decoration"></div></article>
+          <article class="summary-card"><div class="card-label">TOTAL SPENT <span class="card-symbol">⌁</span></div><div id="spentValue" class="card-value">₹0</div><div class="card-foot"><span id="spentPct" class="status-pill rose">0% used</span><span class="subtle">of monthly budget</span></div><div class="progress-track"><div id="spentProgress" class="progress-fill rose-fill"></div></div></article>
+          <article class="summary-card"><div class="card-label">LEFT TO PLAN <span class="card-symbol">◷</span></div><div id="remainingValue" class="card-value">₹0</div><div class="card-foot"><span class="status-pill blue">Available</span><span class="subtle">after recorded spending</span></div><div class="progress-track"><div id="remainingProgress" class="progress-fill blue-fill"></div></div></article>
+          <article class="summary-card"><div class="card-label">SAVINGS TARGET <span class="card-symbol">✦</span></div><div id="savingsValue" class="card-value">₹0</div><div class="card-foot"><span id="savingsRate" class="status-pill mint">0% saved</span><span class="subtle">Suggested plan</span></div><div class="progress-track"><div id="savingsProgress" class="progress-fill mint-fill"></div></div></article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel spending-panel"><div class="panel-heading"><div><h2>Spending overview</h2><p class="muted">Your monthly outflow by category</p></div><button class="text-button" data-go="transactions">View transactions <span>→</span></button></div><div class="chart-wrap"><canvas id="spendingChart" aria-label="Spending by category" role="img"></canvas><div id="chartEmpty" class="chart-empty hidden">Add expenses to see your chart</div></div><div id="legend" class="legend"></div></article>
+          <article class="panel plan-panel"><div class="panel-heading"><div><h2>Monthly plan</h2><p class="muted">Planned compared with actual</p></div><button class="icon-button" data-go="budget" aria-label="Edit budget">···</button></div><div id="planList" class="plan-list"></div><button class="button soft full" data-go="budget">Adjust my plan <span>→</span></button></article>
+        </div>
+        <div class="dashboard-grid lower-grid">
+          <article class="panel transactions-panel"><div class="panel-heading"><div><h2>Recent activity</h2><p class="muted">Your latest transactions</p></div><button class="text-button" data-go="transactions">See all <span>→</span></button></div><div id="recentList" class="transaction-list"></div></article>
+          <article class="panel insight-panel"><div class="insight-top"><span class="insight-glyph">✦</span><span class="status-pill violet">PENNYWISE INSIGHTS</span></div><h2>A little clarity goes a long way.</h2><p id="dashboardInsight" class="muted">Your spending insights will appear here once you add expenses.</p><button class="text-button" data-go="insights">Explore insights <span>→</span></button><div class="insight-blob"></div></article>
+        </div>
+        <p class="disclaimer">For tracking and planning only. Suggestions are simple calculations based on the numbers you enter, not financial advice.</p>
+      </section>
+
+      <section id="transactionsPage" class="page"><div class="page-heading"><div><p class="eyebrow">YOUR ACTIVITY</p><h1>Transactions</h1><p class="muted">Every entry helps you see the bigger picture.</p></div><button class="button primary" id="addExpenseList"><span class="plus">＋</span> Add expense</button></div>
+        <article class="panel table-panel"><div class="filter-row"><input id="searchTransactions" class="input search-input" placeholder="⌕  Search description…"><select id="categoryFilter" class="input select-input"><option>All categories</option></select><input id="monthFilter" class="input month-input" type="month"></div><div class="table-scroll"><table><thead><tr><th>DESCRIPTION</th><th>CATEGORY</th><th>DATE</th><th>PAYMENT</th><th class="align-right">AMOUNT</th><th></th></tr></thead><tbody id="transactionRows"></tbody></table></div><div id="emptyTransactions" class="empty-state hidden"><span>◌</span><b>No transactions found</b><p>Try another filter or add an expense.</p></div></article>
+      </section>
+
+      <section id="budgetPage" class="page"><div class="page-heading"><div><p class="eyebrow">PLAN AHEAD</p><h1>Your monthly plan</h1><p class="muted">Start with the essentials, then adjust to fit your life.</p></div><button class="button primary" id="savePlan">Save plan</button></div>
+        <div class="budget-layout"><article class="panel budget-editor"><div class="panel-heading"><div><h2>Monthly allocations</h2><p class="muted">Set the amount you want to reserve for each area.</p></div></div><div class="budget-income-row"><span>Monthly family support</span><strong id="budgetIncome">₹0</strong><button class="text-button" id="editIncome">Edit</button></div><div id="budgetRows" class="budget-rows"></div></article>
+          <aside class="panel recommendation"><span class="rec-icon">✦</span><p class="eyebrow">STARTER IDEA</p><h2>Give every rupee a little direction.</h2><p class="muted">Enter your monthly income and rent. We’ll suggest a starter plan for travel, food, health, and savings. Change any amount to make it yours.</p><div class="rec-summary" id="recSummary"></div><button id="reapplyPlan" class="button dark full">Recalculate starter plan</button><p class="tiny muted">Planning estimate only. Not financial advice.</p></aside></div>
+      </section>
+
+      <section id="insightsPage" class="page"><div class="page-heading"><div><p class="eyebrow">A FRIENDLY CHECK-IN</p><h1>Smart insights</h1><p class="muted">Simple observations calculated from your own entries.</p></div></div><div id="insightCards" class="insight-cards"></div><article class="panel category-breakdown"><div class="panel-heading"><div><h2>Where the money went</h2><p class="muted">Your highest spending categories this month</p></div></div><div id="breakdownList"></div></article><p class="disclaimer">These are tracking observations, not financial advice. No AI service is connected in this demo.</p></section>
+    </main>
+  </div>
+
+  <div id="expenseModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="expenseTitle"><div class="modal-backdrop" data-close="expenseModal"></div><div class="modal-card"><button class="modal-close" data-close="expenseModal" aria-label="Close">×</button><p class="eyebrow">TRANSACTION</p><h2 id="expenseTitle">Add an expense</h2><p class="muted">Capture the details while they’re fresh.</p><form id="expenseForm"><input type="hidden" id="expenseId"><label class="field-label">Amount</label><div class="currency-input"><span>₹</span><input id="expenseAmount" class="input" type="number" min="0.01" step="0.01" required placeholder="0.00"></div><div class="form-two"><div><label class="field-label">Category</label><select id="expenseCategory" class="input"></select></div><div><label class="field-label">Date</label><input id="expenseDate" class="input" type="date" required></div></div><label class="field-label">Description</label><input id="expenseDescription" class="input" maxlength="80" placeholder="e.g. Lunch with friends"><label class="field-label">Payment method</label><select id="expensePayment" class="input"><option>UPI</option><option>Cash</option><option>Debit card</option><option>Credit card</option><option>Bank transfer</option><option>Other</option></select><button class="button primary full modal-submit" type="submit">Save expense</button></form></div></div>
+  <div id="profileModal" class="modal hidden" role="dialog" aria-modal="true"><div class="modal-backdrop" data-close="profileModal"></div><div class="modal-card compact"><button class="modal-close" data-close="profileModal">×</button><p class="eyebrow">YOUR MONTHLY PLAN</p><h2>Set your starting point</h2><p class="muted">Tell us how much you receive and your fixed rent.</p><form id="profileForm"><label class="field-label">Your name</label><input id="studentName" class="input" maxlength="32" placeholder="Student" required><label class="field-label">Monthly support from family</label><div class="currency-input"><span>₹</span><input id="monthlyIncome" class="input" type="number" min="1" step="1" required></div><label class="field-label">Monthly rent</label><div class="currency-input"><span>₹</span><input id="monthlyRent" class="input" type="number" min="0" step="1" required></div><div id="profilePreview" class="profile-preview"></div><button class="button primary full modal-submit" type="submit">Save my plan</button></form></div></div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.0/dist/js/intlTelInput.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
